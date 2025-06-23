@@ -374,17 +374,19 @@ const renderCart = () => {
                 });
             };
 
-            const changeQuantity = (sku, change) => {
-                const item = cart.find(item => item.sku === sku);
-                if (item) {
-                    item.quantity += change;
-                    if (item.quantity <= 0) {
-                        cart = cart.filter(cartItem => cartItem.sku !== sku);
-                    }
-                }
-                updateCartCounter();
-                renderCart();
-            };
+const changeQuantity = (sku, change) => {
+    const item = cart.find(item => item.sku === sku);
+    if (!item) return;
+
+    item.quantity += change;
+
+    if (item.quantity <= 0) {
+        cart = cart.filter(cartItem => cartItem.sku !== sku);
+    }
+
+    updateCartCounter();
+    renderCart(); // esto recrea todo, incluido el mensaje vacío si es necesario
+};
             
             const updateCartTotal = () => {
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
