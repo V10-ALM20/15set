@@ -330,37 +330,40 @@ productListContainer.addEventListener('click', (e) => {
                 document.getElementById('cart-counter').textContent = totalItems;
             };
 
-            const renderCart = () => {
-                const cartItemsContainer = document.getElementById('cart-items');
-                const emptyCartMessage = document.getElementById('empty-cart-message');
-                cartItemsContainer.innerHTML = '';
-                
-                if (cart.length === 0) {
-                    cartItemsContainer.appendChild(emptyCartMessage);
-                    emptyCartMessage.style.display = 'block';
-                } else {
-                     emptyCartMessage.style.display = 'none';
-                    cart.forEach(item => {
-                        const itemElement = document.createElement('div');
-                        itemElement.className = 'flex justify-between items-center py-3 border-b';
-                        itemElement.innerHTML = `
-                            <div class="w-2/3">
-                                <p class="font-semibold">${item.descripcion}</p>
-                                <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="-1">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="1">+</button>
-                            </div>
-                        `;
-                        cartItemsContainer.appendChild(itemElement);
-                    });
-                }
-                
-                updateCartTotal();
-                addQuantityEventListeners();
-            };
+const renderCart = () => {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+
+    // Eliminar contenido anterior y asegurar que el mensaje vacío no quede duplicado
+    cartItemsContainer.innerHTML = '';
+    if (emptyCartMessage) emptyCartMessage.remove();
+
+    if (cart.length === 0) {
+        emptyCartMessage.style.display = 'block';
+        cartItemsContainer.appendChild(emptyCartMessage);
+    } else {
+        emptyCartMessage.style.display = 'none';
+        cart.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'flex justify-between items-center py-3 border-b';
+            itemElement.innerHTML = `
+                <div class="w-2/3">
+                    <p class="font-semibold">${item.descripcion}</p>
+                    <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="-1">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="1">+</button>
+                </div>
+            `;
+            cartItemsContainer.appendChild(itemElement);
+        });
+    }
+
+    updateCartTotal();
+    addQuantityEventListeners();
+};
             
             const addQuantityEventListeners = () => {
                  document.querySelectorAll('.quantity-change').forEach(button => {
