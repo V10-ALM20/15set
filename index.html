@@ -307,11 +307,12 @@ products.forEach(product => {
             });
 
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const { sku, descripcion, precio } = e.target.dataset;
-                    addToCart(sku, descripcion, parseFloat(precio));
-                });
+            button.addEventListener('click', (e) => {
+            const { sku, descripcion, precio } = e.target.dataset;
+            addToCart(sku, descripcion, parseFloat(precio));
             });
+            });
+
 
             const addToCart = (sku, descripcion, precio) => {
                 const existingItem = cart.find(item => item.sku === sku);
