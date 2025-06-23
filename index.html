@@ -402,12 +402,10 @@
                 window.location.href = `mailto:?subject=${subject}&body=${body}`;
             });
 
-            shareWhatsappBtn.addEventListener('click', () => {
-                const text = encodeURIComponent(generateCartText());
-                // Número de Almacenes El Rey (ajusta aquí si quieres otro número)
-                const phoneNumber = "50688888888";
-                window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
-            });
+shareWhatsappBtn.addEventListener('click', () => {
+    const text = encodeURIComponent(generateCartText());
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+});
 
             // Inicializa contador vacío
             updateCartCounter();
