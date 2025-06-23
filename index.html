@@ -236,34 +236,35 @@
             });
 
 
-            // --- INJECT PRODUCTS INTO SWIPER ---
-            products.forEach(product => {
-                const productHTML = `
-                    <div class="swiper-slide h-auto">
-                        <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
-                            <div class="relative">
-                                <img src="https://placehold.co/400x400/f0f0f0/333?text=${encodeURIComponent(product.descripcion)}" 
-                                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
-                                     alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
-                            </div>
-                            <div class="p-4 flex-grow flex flex-col">
-                                <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
-                                <p class="text-sm text-gray-500 mt-1">SKU: ${product.sku}</p>
-                                <div class="mt-3">
-                                    <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
-                                </div>
-                                <button class="add-to-cart-btn mt-4 w-full bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                                        data-sku="${product.sku}"
-                                        data-descripcion="${product.descripcion}"
-                                        data-precio="${product.precio}">
-                                    Agregar al carrito
-                                </button>
-                            </div>
-                        </div>
+// --- INJECT PRODUCTS INTO SWIPER ---
+products.forEach(product => {
+    const productHTML = `
+        <div class="swiper-slide h-auto">
+            <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
+                <div class="relative">
+                    <img src="https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG" 
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
+                         alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
+                    <p class="text-sm text-gray-500 mt-1">SKU: ${product.sku}</p>
+                    <div class="mt-3">
+                        <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
                     </div>
-                `;
-                productListContainer.innerHTML += productHTML;
-            });
+                    <button class="add-to-cart-btn mt-4 w-full bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                            data-sku="${product.sku}"
+                            data-descripcion="${product.descripcion}"
+                            data-precio="${product.precio}">
+                        Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    productListContainer.innerHTML += productHTML;
+});
+
             
             // --- INITIALIZE SWIPER ---
             const swiper = new Swiper('.mySwiper', {
