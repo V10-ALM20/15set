@@ -293,67 +293,82 @@
                 document.getElementById('cart-counter').textContent = totalItems;
             };
 
-            const renderCart = () => {
-                const cartItemsContainer = document.getElementById('cart-items');
-                let emptyCartMessage = document.getElementById('empty-cart-message');
+const renderCart = () => {
+    const cartItemsContainer = document.getElementById('cart-items');
+    let emptyCartMessage = document.getElementById('empty-cart-message');
 
-                cartItemsContainer.innerHTML = '';
-                if (!emptyCartMessage) {
-                    emptyCartMessage = document.createElement('p');
-                    emptyCartMessage.id = 'empty-cart-message';
-                    emptyCartMessage.className = 'text-gray-500';
-                    emptyCartMessage.textContent = 'Tu carrito está vacío.';
-                }
+    cartItemsContainer.innerHTML = '';
+    if (!emptyCartMessage) {
+        emptyCartMessage = document.createElement('p');
+        emptyCartMessage.id = 'empty-cart-message';
+        emptyCartMessage.className = 'text-gray-500';
+        emptyCartMessage.textContent = 'Tu carrito está vacío.';
+    }
 
-                if (cart.length === 0) {
-                    emptyCartMessage.style.display = 'block';
-                    cartItemsContainer.appendChild(emptyCartMessage);
-                } else {
-                    emptyCartMessage.style.display = 'none';
-                    cart.forEach(item => {
-                        const itemElement = document.createElement('div');
-                        itemElement.className = 'flex justify-between items-center py-3 border-b';
-                        itemElement.innerHTML = `
-                            <div class="w-2/3">
-                                <p class="font-semibold">${item.descripcion}</p>
-                                <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="-1">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-change text-lg font-bold" data-sku="${item.sku}" data-change="1">+</button>
-                            </div>
-                        `;
-                        cartItemsContainer.appendChild(itemElement);
-                    });
-                }
+    if (cart.length === 0) {
+        emptyCartMessage.style.display = 'block';
+        cartItemsContainer.appendChild(emptyCartMessage);
+    } else {
+        emptyCartMessage.style.display = 'none';
+        cart.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'flex justify-between items-center py-3 border-b';
+            itemElement.innerHTML = `
+                <div class="w-2/3">
+                    <p class="font-semibold">${item.descripcion}</p>
+                    <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="quantity-change text-lg font-bold px-2" data-sku="${item.sku}" data-change="-1">−</button>
+                    <input type="number" min="1" value="${item.quantity}" data-sku="${item.sku}" class="w-14 text-center border rounded-md quantity-input">
+                    <button class="quantity-change text-lg font-bold px-2" data-sku="${item.sku}" data-change="1">+</button>
+                </div>
+            `;
+            cartItemsContainer.appendChild(itemElement);
+        });
+    }
 
-                updateCartTotal();
-                addQuantityEventListeners();
-            };
+    updateCartTotal();
+    addQuantityEventListeners();
+    addQuantityInputListeners();
+};
 
-            const addQuantityEventListeners = () => {
-                document.querySelectorAll('.quantity-change').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const { sku, change } = e.target.dataset;
-                        changeQuantity(sku, parseInt(change));
-                    });
-                });
-            };
+const addQuantityEventListeners = () => {
+    document.querySelectorAll('.quantity-change').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const { sku, change } = e.target.dataset;
+            changeQuantity(sku, parseInt(change));
+        });
+    });
+};
 
-            const changeQuantity = (sku, change) => {
-                const item = cart.find(item => item.sku === sku);
-                if (!item) return;
+const addQuantityInputListeners = () => {
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const sku = e.target.dataset.sku;
+            let newQuantity = parseInt(e.target.value);
+            if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
 
-                item.quantity += change;
+            const item = cart.find(item => item.sku === sku);
+            if (item) item.quantity = newQuantity;
 
-                if (item.quantity <= 0) {
-                    cart = cart.filter(cartItem => cartItem.sku !== sku);
-                }
+            updateCartCounter();
+            renderCart();
+        });
+    });
+};
 
-                updateCartCounter();
-                renderCart();
-            };
+const changeQuantity = (sku, change) => {
+    const item = cart.find(item => item.sku === sku);
+    if (!item) return;
+
+    item.quantity += change;
+    if (item.quantity < 1) item.quantity = 1;
+
+    updateCartCounter();
+    renderCart();
+};
+
 
             const updateCartTotal = () => {
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
