@@ -47,6 +47,15 @@
         #cart-modal {
             transition: transform 0.3s ease;
         }
+        /* Hide default number input arrows */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -147,10 +156,8 @@
                 { sku: "0137716", descripcion: "SOMBRERO CHONETE JUVENIL ESTAMPADO BANDERA COSTA RICA", precio: 2750 },
                 { sku: "0093969", descripcion: "SOMBRERO CHONETE TELA P/NINO COSTA RICA", precio: 2750 },
                 { sku: "0069525", descripcion: "SOMBRERO CHONETE P/ADULTO ESTAMPADO BANDERA COSTA RICA", precio: 2750 },
-
                 { sku: "0013040", descripcion: "CABALLITO PALO GRANDE", precio: 2975 },
                 { sku: "0013099", descripcion: "CABALLITO PALO PEQUEÑO", precio: 2750 },
-                
                 { sku: "0255089", descripcion: "BANDERA PAPEL COSTA RICA 16.5X28.5CM 10UND", precio: 850 },
                 { sku: "0253343", descripcion: "BANDERA DE GUANACASTE PAPEL", precio: 125 },
                 { sku: "0083071", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 30X45CM", precio: 500 },
@@ -159,7 +166,6 @@
                 { sku: "0083074", descripcion: "BANDERA TELA COSTA RICA 90X150CM", precio: 1750 },
                 { sku: "0203227", descripcion: "BANDERA TELA C/BASE PLASTICA P/ESCRITORIO 14X21CM-28CM", precio: 500 },
                 { sku: "0210797", descripcion: "CINTA DECORATIVA TELA BANDERA COSTA RICA 90X8CM", precio: 650 },
-
                 { sku: "0216786", descripcion: "GUIRNALDA PAPEL TRICOLOR C/CAMPESINOS 3M", precio: 1250 },
                 { sku: "0216784", descripcion: "GUIRNALDA PAPEL TRICOLOR C/GUARIA MORADA 3M", precio: 1250 },
                 { sku: "0216788", descripcion: "GUIRNALDA PAPEL TRICOLOR 3M", precio: 850 },
@@ -167,7 +173,6 @@
                 { sku: "0230293", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M ROJA", precio: 1250 },
                 { sku: "0230292", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M AZUL", precio: 1250 },
                 { sku: "0216782", descripcion: "DECORACION TIPICA C/RUEDA 3M SURTIDO", precio: 800 },
-
                 { sku: "0216793", descripcion: "ABANICO PAPEL CIRCULAR TRICOLOR 20CM", precio: 650 },
                 { sku: "0216794", descripcion: "ABANICO PAPEL TRICOLOR 50CM", precio: 650 },
                 { sku: "0216804", descripcion: "ABANICO PAPEL TRICOLOR 25CM", precio: 500 },
@@ -180,7 +185,6 @@
                 { sku: "0216791", descripcion: "GLOBO CHINO PAPEL 12PULG TRICOLOR", precio: 1250 },
                 { sku: "0092791", descripcion: "ADORNO BOLA 15 SEPTIEMBRE 19CM", precio: 700 },
                 { sku: "0230288", descripcion: "ADORNO MES PATRIO CAMPESINOS 32X50CM SURTIDO", precio: 2350 },
-
                 { sku: "0255084", descripcion: "CANASTA BAMBU ENTRELAZADO MARRON", precio: 850 },
                 { sku: "0148044", descripcion: "CAJA MADERA TIPO REJAS ABIERTA #2 7X23.5X16", precio: 1950 },
                 { sku: "0148045", descripcion: "CAJA MADERA TIPO REJAS ABIERTA #3 7X28X24", precio: 2350 },
@@ -188,7 +192,6 @@
                 { sku: "0273617", descripcion: "MACETA MADERA CUADRADA C/ASA 16X16X13CM BEIGE", precio: 3625 },
                 { sku: "0279046", descripcion: "PLANTA ARTIFICIAL ORQUIDEA C/MACETA PLASTICA RELIEVE FLORES 11X8X27CM PURPURA", precio: 2300 },
                 { sku: "0243719", descripcion: "ENREDADERA ARTIFICIAL C/CERCA 1X2M VERDE+MARRON", precio: 19750 },
-
                 { sku: "0129357", descripcion: "CHORREADOR MADERA TENIDO", precio: 2625 },
                 { sku: "0079930", descripcion: "JARRA LOZA BLANCA 8CM", precio: 475 },
                 { sku: "0286502", descripcion: "JARRA LOZA ESTAMPADO PUNTOS 8CM 350ML AZUL+BLANCO", precio: 1500 },
@@ -207,8 +210,8 @@
                         <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
                             <div class="relative">
                                 <img src="https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG" 
-                                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
-                                     alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
+                                    onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
+                                    alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
                             </div>
                             <div class="p-4 flex-grow flex flex-col">
                                 <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
@@ -216,12 +219,20 @@
                                 <div class="mt-3">
                                     <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
                                 </div>
-                                <button class="add-to-cart-btn mt-4 w-full bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                                        data-sku="${product.sku}"
-                                        data-descripcion="${product.descripcion}"
-                                        data-precio="${product.precio}">
-                                    Agregar al carrito
-                                </button>
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center border rounded-lg overflow-hidden">
+                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="decrease">-</button>
+                                        <!-- Removed 'readonly' attribute to allow manual input -->
+                                        <input type="number" min="1" value="1" data-sku="${product.sku}" class="quantity-input-product w-12 text-center text-gray-700 outline-none focus:ring-0">
+                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="increase">+</button>
+                                    </div>
+                                    <button class="add-to-cart-btn bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                                            data-sku="${product.sku}"
+                                            data-descripcion="${product.descripcion}"
+                                            data-precio="${product.precio}">
+                                        Agregar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -249,6 +260,9 @@
             const closeCartButton = document.getElementById('close-cart-button');
             const cartModalContainer = document.getElementById('cart-modal-container');
             const cartModal = document.getElementById('cart-modal');
+            const cartItemsContainer = document.getElementById('cart-items');
+            let emptyCartMessage = document.getElementById('empty-cart-message'); 
+
 
             const openCart = () => {
                 renderCart();
@@ -273,16 +287,48 @@
             productListContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('add-to-cart-btn')) {
                     const { sku, descripcion, precio } = e.target.dataset;
-                    addToCart(sku, descripcion, parseFloat(precio));
+                    // Get the quantity from the input next to the clicked button
+                    const quantityInput = e.target.closest('.flex').querySelector('.quantity-input-product');
+                    const quantity = parseInt(quantityInput.value);
+                    addToCart(sku, descripcion, parseFloat(precio), quantity);
+                }
+            });
+            
+            // Quantity controls on product cards (for + and - buttons)
+            productListContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('quantity-control')) {
+                    const sku = e.target.dataset.sku;
+                    const action = e.target.dataset.action;
+                    const quantityInput = e.target.closest('.flex').querySelector('.quantity-input-product');
+                    let currentQuantity = parseInt(quantityInput.value);
+
+                    if (action === 'decrease' && currentQuantity > 1) {
+                        currentQuantity--;
+                    } else if (action === 'increase') {
+                        currentQuantity++;
+                    }
+                    quantityInput.value = currentQuantity;
                 }
             });
 
-            const addToCart = (sku, descripcion, precio) => {
+            // Add change listener for manual input on product cards
+            productListContainer.addEventListener('change', (e) => {
+                if (e.target.classList.contains('quantity-input-product')) {
+                    let newQuantity = parseInt(e.target.value);
+                    // Ensure quantity is at least 1
+                    if (isNaN(newQuantity) || newQuantity < 1) {
+                        e.target.value = 1;
+                    }
+                }
+            });
+
+
+            const addToCart = (sku, descripcion, precio, quantity = 1) => {
                 const existingItem = cart.find(item => item.sku === sku);
                 if (existingItem) {
-                    existingItem.quantity++;
+                    existingItem.quantity += quantity;
                 } else {
-                    cart.push({ sku, descripcion, precio, quantity: 1 });
+                    cart.push({ sku, descripcion, precio, quantity });
                 }
                 updateCartCounter();
                 openCart(); // open cart modal automatically when adding
@@ -293,82 +339,86 @@
                 document.getElementById('cart-counter').textContent = totalItems;
             };
 
-const renderCart = () => {
-    const cartItemsContainer = document.getElementById('cart-items');
-    let emptyCartMessage = document.getElementById('empty-cart-message');
+            const renderCart = () => {
+                cartItemsContainer.innerHTML = '';
+                if (cart.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                    cartItemsContainer.appendChild(emptyCartMessage);
+                } else {
+                    emptyCartMessage.style.display = 'none';
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'flex justify-between items-center py-3 border-b';
+                        itemElement.innerHTML = `
+                            <div class="w-2/3">
+                                <p class="font-semibold">${item.descripcion}</p>
+                                <p class="text-sm text-gray-600">SKU: ${item.sku}</p>
+                                <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="quantity-change text-lg font-bold px-2 rounded-md bg-gray-200 hover:bg-gray-300" data-sku="${item.sku}" data-change="-1">−</button>
+                                <input type="number" min="1" value="${item.quantity}" data-sku="${item.sku}" class="w-14 text-center border rounded-md quantity-input">
+                                <button class="quantity-change text-lg font-bold px-2 rounded-md bg-gray-200 hover:bg-gray-300" data-sku="${item.sku}" data-change="1">+</button>
+                                <button class="remove-from-cart-btn text-rey-red hover:text-red-700 ml-2" data-sku="${item.sku}">
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                }
+                updateCartTotal();
+                addCartItemEventListeners(); // Re-add event listeners for new elements
+            };
 
-    cartItemsContainer.innerHTML = '';
-    if (!emptyCartMessage) {
-        emptyCartMessage = document.createElement('p');
-        emptyCartMessage.id = 'empty-cart-message';
-        emptyCartMessage.className = 'text-gray-500';
-        emptyCartMessage.textContent = 'Tu carrito está vacío.';
-    }
+            const addCartItemEventListeners = () => {
+                document.querySelectorAll('.quantity-change').forEach(button => {
+                    button.onclick = (e) => { // Use onclick to easily reassign
+                        const { sku, change } = e.target.dataset;
+                        changeQuantity(sku, parseInt(change));
+                    };
+                });
 
-    if (cart.length === 0) {
-        emptyCartMessage.style.display = 'block';
-        cartItemsContainer.appendChild(emptyCartMessage);
-    } else {
-        emptyCartMessage.style.display = 'none';
-        cart.forEach(item => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'flex justify-between items-center py-3 border-b';
-            itemElement.innerHTML = `
-                <div class="w-2/3">
-                    <p class="font-semibold">${item.descripcion}</p>
-                    <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button class="quantity-change text-lg font-bold px-2" data-sku="${item.sku}" data-change="-1">−</button>
-                    <input type="number" min="1" value="${item.quantity}" data-sku="${item.sku}" class="w-14 text-center border rounded-md quantity-input">
-                    <button class="quantity-change text-lg font-bold px-2" data-sku="${item.sku}" data-change="1">+</button>
-                </div>
-            `;
-            cartItemsContainer.appendChild(itemElement);
-        });
-    }
+                document.querySelectorAll('.quantity-input').forEach(input => {
+                    input.onchange = (e) => { // Use onchange to easily reassign
+                        const sku = e.target.dataset.sku;
+                        let newQuantity = parseInt(e.target.value);
+                        if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
 
-    updateCartTotal();
-    addQuantityEventListeners();
-    addQuantityInputListeners();
-};
+                        const item = cart.find(item => item.sku === sku);
+                        if (item) item.quantity = newQuantity;
 
-const addQuantityEventListeners = () => {
-    document.querySelectorAll('.quantity-change').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const { sku, change } = e.target.dataset;
-            changeQuantity(sku, parseInt(change));
-        });
-    });
-};
+                        updateCartCounter();
+                        renderCart();
+                    };
+                });
 
-const addQuantityInputListeners = () => {
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', (e) => {
-            const sku = e.target.dataset.sku;
-            let newQuantity = parseInt(e.target.value);
-            if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+                document.querySelectorAll('.remove-from-cart-btn').forEach(button => {
+                    button.onclick = (e) => { // Use onclick to easily reassign
+                        const skuToRemove = e.target.closest('button').dataset.sku;
+                        removeFromCart(skuToRemove);
+                    };
+                });
+            };
 
-            const item = cart.find(item => item.sku === sku);
-            if (item) item.quantity = newQuantity;
+            const changeQuantity = (sku, change) => {
+                const item = cart.find(item => item.sku === sku);
+                if (!item) return;
 
-            updateCartCounter();
-            renderCart();
-        });
-    });
-};
+                item.quantity += change;
+                if (item.quantity < 1) item.quantity = 1; // Prevent quantity from going below 1
 
-const changeQuantity = (sku, change) => {
-    const item = cart.find(item => item.sku === sku);
-    if (!item) return;
+                updateCartCounter();
+                renderCart();
+            };
 
-    item.quantity += change;
-    if (item.quantity < 1) item.quantity = 1;
-
-    updateCartCounter();
-    renderCart();
-};
-
+            const removeFromCart = (skuToRemove) => {
+                cart = cart.filter(item => item.sku !== skuToRemove);
+                updateCartCounter();
+                renderCart();
+            };
 
             const updateCartTotal = () => {
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
@@ -397,10 +447,10 @@ const changeQuantity = (sku, change) => {
                 window.location.href = `mailto:?subject=${subject}&body=${body}`;
             });
 
-shareWhatsappBtn.addEventListener('click', () => {
-    const text = encodeURIComponent(generateCartText());
-    window.open(`https://wa.me/?text=${text}`, '_blank');
-});
+            shareWhatsappBtn.addEventListener('click', () => {
+                const text = encodeURIComponent(generateCartText());
+                window.open(`https://wa.me/?text=${text}`, '_blank');
+            });
 
             // Inicializa contador vacío
             updateCartCounter();
