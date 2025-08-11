@@ -13,9 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Swiper.js CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-
     <!-- Custom Tailwind Config & Styles -->
     <script>
         tailwind.config = {
@@ -36,10 +33,6 @@
         html, body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-        }
-        .swiper-button-next, .swiper-button-prev {
-            color: #E2001A;
-            transform: scale(0.7);
         }
         #cart-modal-container {
             transition: opacity 0.3s ease;
@@ -90,15 +83,13 @@
             <h1 class="text-4xl font-extrabold text-rey-red tracking-tight">Celebraciones Patrias</h1>
         </div>
 
-        <!-- Products Carousel -->
-        <div class="swiper-container mySwiper">
-            <div id="product-list" class="swiper-wrapper">
-                <!-- Product slides will be inyected by JS -->
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
+        <!-- Products Grid -->
+        <!-- The products will now be displayed in a responsive grid -->
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Product cards will be injected by JS -->
         </div>
     </main>
+
     <!-- =========== Footer =========== -->
     <footer class="bg-gray-800 text-white mt-12">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
@@ -143,9 +134,6 @@
         </div>
     </div>
 
-    <!-- Swiper.js JS -->
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- PRODUCT DATA ---
@@ -159,7 +147,6 @@
                 { sku: "0013040", descripcion: "CABALLITO PALO GRANDE", precio: 2975 },
                 { sku: "0013099", descripcion: "CABALLITO PALO PEQUEÑO", precio: 2750 },
                 { sku: "0255089", descripcion: "BANDERA PAPEL COSTA RICA 16.5X28.5CM 10UND", precio: 850 },
-                { sku: "0253343", descripcion: "BANDERA DE GUANACASTE PAPEL", precio: 125 },
                 { sku: "0083071", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 30X45CM", precio: 500 },
                 { sku: "0083072", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 60X90CM", precio: 975 },
                 { sku: "0083073", descripcion: "BANDERA TELA COSTA RICA 70X100CM", precio: 1250 },
@@ -186,73 +173,46 @@
                 { sku: "0092791", descripcion: "ADORNO BOLA 15 SEPTIEMBRE 19CM", precio: 700 },
                 { sku: "0230288", descripcion: "ADORNO MES PATRIO CAMPESINOS 32X50CM SURTIDO", precio: 2350 },
                 { sku: "0255084", descripcion: "CANASTA BAMBU ENTRELAZADO MARRON", precio: 850 },
-                { sku: "0148044", descripcion: "CAJA MADERA TIPO REJAS ABIERTA #2 7X23.5X16", precio: 1950 },
-                { sku: "0148045", descripcion: "CAJA MADERA TIPO REJAS ABIERTA #3 7X28X24", precio: 2350 },
-                { sku: "0238547", descripcion: "CAJA MADERA REJAS #5 BAJA P/ARREGLOS 35X26X9,5CM 590G NATURAL", precio: 3900 },
-                { sku: "0273617", descripcion: "MACETA MADERA CUADRADA C/ASA 16X16X13CM BEIGE", precio: 3625 },
-                { sku: "0279046", descripcion: "PLANTA ARTIFICIAL ORQUIDEA C/MACETA PLASTICA RELIEVE FLORES 11X8X27CM PURPURA", precio: 2300 },
-                { sku: "0243719", descripcion: "ENREDADERA ARTIFICIAL C/CERCA 1X2M VERDE+MARRON", precio: 19750 },
-                { sku: "0129357", descripcion: "CHORREADOR MADERA TENIDO", precio: 2625 },
                 { sku: "0079930", descripcion: "JARRA LOZA BLANCA 8CM", precio: 475 },
                 { sku: "0286502", descripcion: "JARRA LOZA ESTAMPADO PUNTOS 8CM 350ML AZUL+BLANCO", precio: 1500 },
-                { sku: "0286511", descripcion: "CAFETERA LOZA ESTAMPADO PUNTOS C/TAPA 8 TAZAS 1.9L AZUL+BLANCO", precio: 9250 },
-                { sku: "0286512", descripcion: "CAFETERA LOZA LISA C/TAPA 6 TAZAS 1.5L BLANCO", precio: 9250 }
             ];
 
             // Container references
             const productListContainer = document.getElementById('product-list');
             let cart = [];
 
-            // --- INJECT PRODUCTS INTO SWIPER ---
+            // --- INJECT PRODUCTS INTO GRID ---
             products.forEach(product => {
                 const productHTML = `
-                    <div class="swiper-slide h-auto">
-                        <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
-                            <div class="relative">
-                                <img src="https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG" 
-                                    onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
-                                    alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
+                    <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
+                        <div class="relative">
+                            <img src="https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG" 
+                                onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
+                                alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
+                        </div>
+                        <div class="p-4 flex-grow flex flex-col">
+                            <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
+                            <p class="text-sm text-gray-500 mt-1">SKU: ${product.sku}</p>
+                            <div class="mt-3">
+                                <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
                             </div>
-                            <div class="p-4 flex-grow flex flex-col">
-                                <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
-                                <p class="text-sm text-gray-500 mt-1">SKU: ${product.sku}</p>
-                                <div class="mt-3">
-                                    <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <div class="flex items-center border rounded-lg overflow-hidden">
+                                    <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="decrease">-</button>
+                                    <input type="number" min="1" value="1" data-sku="${product.sku}" class="quantity-input-product w-12 text-center text-gray-700 outline-none focus:ring-0">
+                                    <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="increase">+</button>
                                 </div>
-                                <div class="flex items-center justify-between mt-4">
-                                    <div class="flex items-center border rounded-lg overflow-hidden">
-                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="decrease">-</button>
-                                        <!-- Removed 'readonly' attribute to allow manual input -->
-                                        <input type="number" min="1" value="1" data-sku="${product.sku}" class="quantity-input-product w-12 text-center text-gray-700 outline-none focus:ring-0">
-                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="increase">+</button>
-                                    </div>
-                                    <button class="add-to-cart-btn bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                                            data-sku="${product.sku}"
-                                            data-descripcion="${product.descripcion}"
-                                            data-precio="${product.precio}">
-                                        Agregar
-                                    </button>
-                                </div>
+                                <button class="add-to-cart-btn bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                                        data-sku="${product.sku}"
+                                        data-descripcion="${product.descripcion}"
+                                        data-precio="${product.precio}">
+                                    Agregar
+                                </button>
                             </div>
                         </div>
                     </div>
                 `;
                 productListContainer.innerHTML += productHTML;
-            });
-
-            // --- INITIALIZE SWIPER ---
-            const swiper = new Swiper('.mySwiper', {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                breakpoints: {
-                    640: { slidesPerView: 2, spaceBetween: 20 },
-                    768: { slidesPerView: 3, spaceBetween: 30 },
-                    1024: { slidesPerView: 4, spaceBetween: 30 },
-                },
             });
 
             // --- CART FUNCTIONALITY ---
@@ -262,7 +222,6 @@
             const cartModal = document.getElementById('cart-modal');
             const cartItemsContainer = document.getElementById('cart-items');
             let emptyCartMessage = document.getElementById('empty-cart-message'); 
-
 
             const openCart = () => {
                 renderCart();
@@ -458,3 +417,4 @@
     </script>
 </body>
 </html>
+
