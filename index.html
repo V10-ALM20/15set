@@ -34,7 +34,7 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        #cart-modal-container {
+        #cart-modal-container, #lightbox-modal-container { /* Added lightbox-modal-container */
             transition: opacity 0.3s ease;
         }
         #cart-modal {
@@ -84,9 +84,15 @@
         </div>
 
         <!-- Products Grid -->
-        <!-- The products will now be displayed in a responsive grid -->
         <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Product cards will be injected by JS -->
+        </div>
+
+        <!-- Load More Button -->
+        <div id="load-more-container" class="flex justify-center items-center mt-8">
+            <button id="load-more-btn" class="bg-rey-red text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                Cargar más
+            </button>
         </div>
     </main>
 
@@ -118,7 +124,7 @@
                     <p id="empty-cart-message" class="text-gray-500">Tu carrito está vacío.</p>
                 </div>
 
-                <!-- Modal Footer -->
+                <!-- Modal Footer - Re-added Total section -->
                 <div class="p-4 border-t bg-gray-50">
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-lg font-semibold">Total:</span>
@@ -134,19 +140,33 @@
         </div>
     </div>
 
+    <!-- =========== Lightbox Modal for Images =========== -->
+    <div id="lightbox-modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center pointer-events-none opacity-0 z-[60]">
+        <div class="relative p-4 max-w-full max-h-full">
+            <button id="close-lightbox-button" class="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full p-1 hover:bg-opacity-75 transition-colors">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <img id="lightbox-image" src="" alt="Imagen ampliada" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-xl">
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- PRODUCT DATA ---
+            // Los productos con 'url' utilizan su propia URL de imagen.
+            // Los productos sin 'url' intentarán cargar desde la ruta de GitHub usando su SKU.
             const products = [
-                { sku: "0216793", descripcion: "ABANICO PAPEL CIRCULAR TRICOLOR 20CM", precio: 650 },
+                { sku: "0216793", descripcion: "ABANICO PAPEL CIRCULAR TRICOLOR 20CM", precio: 650 }, 
                 { sku: "0216794", descripcion: "ABANICO PAPEL TRICOLOR 50CM", precio: 650 },
                 { sku: "0216804", descripcion: "ABANICO PAPEL TRICOLOR 25CM", precio: 500 },
                 { sku: "0216805", descripcion: "ABANICO PAPEL 50CM TRICOLOR", precio: 850 },
                 { sku: "0216803", descripcion: "ABANICO PAPEL 20CM TRICOLOR", precio: 500 },
                 { sku: "0092791", descripcion: "ADORNO BOLA 15 SEPTIEMBRE 19CM", precio: 700 },
                 { sku: "0230288", descripcion: "ADORNO MES PATRIO CAMPESINOS 32X50CM SURTIDO", precio: 2350 },
-                { sku: "0216800", descripcion: "ADORNO PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216800/UD/150515056612750409.JPG" },
-                { sku: "0210799", descripcion: "ADORNO CARTON MES PATRIO LAPAS", url: "https://stscaiprod.blob.core.windows.net/0210799/UD/1505150566202182457.JPG" },
+                { sku: "0216800", descripcion: "ADORNO PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216800/UD/150515056612750409.JPG", precio: 650 },
+                { sku: "0210799", descripcion: "ADORNO CARTON MES PATRIO LAPAS", url: "https://stscaiprod.blob.core.windows.net/0210799/UD/1505150566202182457.JPG", precio: 1750 },
                 { sku: "0255089", descripcion: "BANDERA PAPEL COSTA RICA 16.5X28.5CM 10UND", precio: 850 },
                 { sku: "0083071", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 30X45CM", precio: 500 },
                 { sku: "0083072", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 60X90CM", precio: 975 },
@@ -154,33 +174,33 @@
                 { sku: "0083074", descripcion: "BANDERA TELA COSTA RICA 90X150CM", precio: 1750 },
                 { sku: "0203227", descripcion: "BANDERA TELA C/BASE PLASTICA P/ESCRITORIO 14X21CM-28CM", precio: 500 },
                 { sku: "0216799", descripcion: "CAMPANA PAPEL TRICOLOR 38CM", precio: 1500 },
-                { sku: "0216798", descripcion: "CAMPANA PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216798/UD/150515056610350435.JPG" },
+                { sku: "0216798", descripcion: "CAMPANA PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216798/UD/150515056610350435.JPG", precio: 650 },
                 { sku: "0255084", descripcion: "CANASTA BAMBU ENTRELAZADO MARRON", precio: 850 },
                 { sku: "0210797", descripcion: "CINTA DECORATIVA TELA BANDERA COSTA RICA 90X8CM", precio: 650 },
-                { sku: "0216792", descripcion: "CILINDRO PLEGABLE CORRUGADO", url: "https://stscaiprod.blob.core.windows.net/0216792/UD/150515056605950404.JPG" },
+                { sku: "0216792", descripcion: "CILINDRO PLEGABLE CORRUGADO", url: "https://stscaiprod.blob.core.windows.net/0216792/UD/150515056605950404.JPG", precio: 850 },
                 { sku: "0216782", descripcion: "DECORACION TIPICA C/RUEDA 3M SURTIDO", precio: 800 },
-                { sku: "0210801", descripcion: "ESCUDO COSTARRICENSE 25CM", url: "https://stscaiprod.blob.core.windows.net/0210801/UD/150515056622650360.JPG" },
-                { sku: "0210800", descripcion: "ESCUDO COSTARRICENSE 61CM", url: "https://stscaiprod.blob.core.windows.net/0210800/UD/150515056621950359.JPG" },       
+                { sku: "0210801", descripcion: "ESCUDO COSTARRICENSE 25CM", url: "https://stscaiprod.blob.core.windows.net/0210801/UD/150515056622650360.JPG", precio: 850 },
+                { sku: "0210800", descripcion: "ESCUDO COSTARRICENSE 61CM", url: "https://stscaiprod.blob.core.windows.net/0210800/UD/150515056621950359.JPG", precio: 1750 },
                 { sku: "0216797", descripcion: "ESFERA PAPEL 38CM TRICOLOR", precio: 1500 },
                 { sku: "0216796", descripcion: "ESFERA PAPEL 30CM TRICOLOR", precio: 850 },
                 { sku: "0216795", descripcion: "ESFERA PAPEL COLGANTE 20CM TRICOLOR", precio: 650 },
-                { sku: "0255094", descripcion: "FAROL FAUNA COSTA RICA", url: "https://stscaiprod.blob.core.windows.net/0255094/UD/1505150790126182540.JPG" },
-                { sku: "0255092", descripcion: "FAROL FAUNA COSTA RICA LAPA", url: "https://stscaiprod.blob.core.windows.net/0255092/UD/1505150790102182539.JPG" },
-                { sku: "0210802", descripcion: "FAROL CASA 32X50CM", url: "https://stscaiprod.blob.core.windows.net/0210802/UD/1505150566639182453.JPG" },
-                { sku: "0286501", descripcion: "GANCHO PLASTICO P/FAROL", url: "https://stscaiprod.blob.core.windows.net/0286501/UD/1505151016683255369.JPG" },
-                { sku: "0216786", descripcion: "GUIRNALDA PAPEL TRICOLOR C/CAMPESINOS 3M", precio: 1250 },             
+                { sku: "0255094", descripcion: "FAROL FAUNA COSTA RICA", url: "https://stscaiprod.blob.core.windows.net/0255094/UD/1505150790126182540.JPG", precio: 1250 },
+                { sku: "0255092", descripcion: "FAROL FAUNA COSTA RICA LAPA", url: "https://stscaiprod.blob.core.windows.net/0255092/UD/1505150790102182539.JPG", precio: 1250 },
+                { sku: "0210802", descripcion: "FAROL CASA 32X50CM", url: "https://stscaiprod.blob.core.windows.net/0210802/UD/1505150566639182453.JPG", precio: 950 },
+                { sku: "0286501", descripcion: "GANCHO PLASTICO P/FAROL", url: "https://stscaiprod.blob.core.windows.net/0286501/UD/1505151016683255369.JPG", precio: 1250 },
+                { sku: "0216786", descripcion: "GUIRNALDA PAPEL TRICOLOR C/CAMPESINOS 3M", precio: 1250 },
                 { sku: "0216791", descripcion: "GLOBO CHINO PAPEL 12PULG TRICOLOR", precio: 1250 },
                 { sku: "0216784", descripcion: "GUIRNALDA PAPEL TRICOLOR C/GUARIA MORADA 3M", precio: 1250 },
                 { sku: "0216788", descripcion: "GUIRNALDA PAPEL TRICOLOR 3M", precio: 850 },
                 { sku: "0230291", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO YUGO CARRETAS 3M", precio: 1500 },
                 { sku: "0230293", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M ROJA", precio: 1250 },
                 { sku: "0230292", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M AZUL", precio: 1250 },
-                { sku: "0216787", descripcion: "GUIRNALDA PAPEL CARRETA TIPICA", url: "https://stscaiprod.blob.core.windows.net/0216787/UD/150515056599150317.JPG" },
-                { sku: "0216789", descripcion: "GUIRNALDA PAPEL TRICOLOR 2M", url: "https://stscaiprod.blob.core.windows.net/0216789/UD/150515056602850314.JPG" },
-                { sku: "0216802", descripcion: "GUIRNALDA TRICOLOR 10CM 8UND", url: "https://stscaiprod.blob.core.windows.net/0216802/UD/150515056606650309.JPG" },
-                { sku: "0230290", descripcion: "GUIRNALDA MES PATRIO ANTORCHA", url: "https://stscaiprod.blob.core.windows.net/0230290/UD/150515066076450303.jpg" },
-                { sku: "0216790", descripcion: "GUIRNALDA PAPEL C/BANDERA 2M", url: "https://stscaiprod.blob.core.windows.net/0216790/UD/150515056603550300.JPG" },
-                { sku: "0216783", descripcion: "GUIRNALDA PAPEL C/ESCUDO 3M", url: "https://stscaiprod.blob.core.windows.net/0216783/UD/150515056595350294.JPG" },
+                { sku: "0216787", descripcion: "GUIRNALDA PAPEL CARRETA TIPICA", url: "https://stscaiprod.blob.core.windows.net/0216787/UD/150515056599150317.JPG", precio: 1500 },
+                { sku: "0216789", descripcion: "GUIRNALDA PAPEL TRICOLOR 2M", url: "https://stscaiprod.blob.core.windows.net/0216789/UD/150515056602850314.JPG", precio: 650 },
+                { sku: "0216802", descripcion: "GUIRNALDA TRICOLOR 10CM 8UND", url: "https://stscaiprod.blob.core.windows.net/0216802/UD/150515056606650309.JPG", precio: 1500 },
+                { sku: "0230290", descripcion: "GUIRNALDA MES PATRIO ANTORCHA", url: "https://stscaiprod.blob.core.windows.net/0230290/UD/150515066076450303.jpg", precio: 1500 },
+                { sku: "0216790", descripcion: "GUIRNALDA PAPEL C/BANDERA 2M", url: "https://stscaiprod.blob.core.windows.net/0216790/UD/150515056603550300.JPG", precio: 850 },
+                { sku: "0216783", descripcion: "GUIRNALDA PAPEL C/ESCUDO 3M", url: "https://stscaiprod.blob.core.windows.net/0216783/UD/150515056595350294.JPG", precio: 1250 },
                 { sku: "0279757", descripcion: "PANUELO TIPICO ESTAMPADO BLANCO", precio: 550 },
                 { sku: "0255087", descripcion: "PANUELO TIPICO ESTAMPADO AZUL", precio: 550 },
                 { sku: "0255086", descripcion: "PANUELO TIPICO ESTAMPADO ROJO", precio: 550 },
@@ -189,46 +209,84 @@
                 { sku: "0069525", descripcion: "SOMBRERO CHONETE P/ADULTO ESTAMPADO BANDERA COSTA RICA", precio: 2750 },
                 { sku: "0079930", descripcion: "JARRA LOZA BLANCA 8CM", precio: 475 },
                 { sku: "0286502", descripcion: "JARRA LOZA ESTAMPADO PUNTOS 8CM 350ML AZUL+BLANCO", precio: 1500 },
-
             ];
 
             // Container references
             const productListContainer = document.getElementById('product-list');
             let cart = [];
 
-            // --- INJECT PRODUCTS INTO GRID ---
-            products.forEach(product => {
-                const productHTML = `
-                    <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
-                        <div class="relative">
-                            <img src="https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG" 
-                                onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
-                                alt="Imagen de ${product.descripcion}" class="w-full h-56 object-cover">
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col">
-                            <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
-                            <p class="text-sm text-gray-500 mt-1">SKU: ${product.sku}</p>
-                            <div class="mt-3">
-                                <p class="text-2xl font-bold text-rey-red">₡${product.precio.toLocaleString('es-CR')}</p>
+            // --- VARIABLES PARA "CARGAR MÁS" ---
+            const productsPerLoad = 60;
+            let productsToShow = productsPerLoad;
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const loadMoreContainer = document.getElementById('load-more-container');
+
+            // --- FUNCIÓN PARA RENDERIZAR LOS PRODUCTOS VISIBLES ---
+            const renderProducts = () => {
+                productListContainer.innerHTML = ''; // Limpiar productos existentes
+                
+                // Mostrar una porción del array de productos
+                const productsToRender = products.slice(0, productsToShow);
+
+                productsToRender.forEach(product => {
+                    const sku = product.sku;
+                    // Determinar la URL de la imagen: usar product.url si existe, de lo contrario, construirla.
+                    const imgSrc = product.url ? product.url : `https://raw.githubusercontent.com/V10-ALM20/15set/main/images/${product.sku}.JPG`;
+                    
+                    const productHTML = `
+                        <div class="bg-white border rounded-lg shadow-sm overflow-hidden group transition-transform duration-300 hover:shadow-xl flex flex-col h-full">
+                            <div class="relative cursor-pointer">
+                                <img src="${imgSrc}" 
+                                    loading="lazy"
+                                    onclick="openLightbox('${imgSrc}')"
+                                    onerror="this.onerror=null;this.src='https://placehold.co/400x400/f0f0f0/333?text=Imagen+no+disponible';" 
+                                    alt="Imagen de ${product.descripcion}" class="w-full h-56 object-contain">
                             </div>
-                            <div class="flex items-center justify-between mt-4">
-                                <div class="flex items-center border rounded-lg overflow-hidden">
-                                    <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="decrease">-</button>
-                                    <input type="number" min="1" value="1" data-sku="${product.sku}" class="quantity-input-product w-12 text-center text-gray-700 outline-none focus:ring-0">
-                                    <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${product.sku}" data-action="increase">+</button>
+                            <div class="p-4 flex-grow flex flex-col">
+                                <h3 class="text-lg font-semibold text-gray-800 flex-grow">${product.descripcion}</h3>
+                                <p class="text-sm text-gray-500 mt-1">SKU: ${sku}</p>
+                                <div class="mt-3">
+                                    <p class="text-2xl font-bold text-rey-red">₡${product.precio ? product.precio.toLocaleString('es-CR') : 'N/A'}</p>
                                 </div>
-                                <button class="add-to-cart-btn bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                                        data-sku="${product.sku}"
-                                        data-descripcion="${product.descripcion}"
-                                        data-precio="${product.precio}">
-                                    Agregar
-                                </button>
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center border rounded-lg overflow-hidden">
+                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${sku}" data-action="decrease">-</button>
+                                        <input type="number" min="1" value="1" data-sku="${sku}" class="quantity-input-product w-12 text-center text-gray-700 outline-none focus:ring-0">
+                                        <button class="quantity-control p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold" data-sku="${sku}" data-action="increase">+</button>
+                                    </div>
+                                    <button class="add-to-cart-btn bg-rey-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                                            data-sku="${sku}"
+                                            data-descripcion="${product.descripcion}"
+                                            data-precio="${product.precio || 0}"> <!-- Pasar el precio al botón -->
+                                        Agregar
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                productListContainer.innerHTML += productHTML;
+                    `;
+                    productListContainer.innerHTML += productHTML;
+                });
+            };
+
+            // --- FUNCIÓN PARA ACTUALIZAR EL BOTÓN DE "CARGAR MÁS" ---
+            const updateLoadMoreButton = () => {
+                if (productsToShow >= products.length) {
+                    loadMoreContainer.style.display = 'none'; // Oculta el botón si no hay más productos
+                } else {
+                    loadMoreContainer.style.display = 'flex'; // Asegura que el botón sea visible
+                }
+            };
+
+            // --- EVENT LISTENER PARA EL BOTÓN DE "CARGAR MÁS" ---
+            loadMoreBtn.addEventListener('click', () => {
+                productsToShow += productsPerLoad; // Aumenta la cantidad de productos a mostrar
+                renderProducts(); // Vuelve a renderizar la lista con la nueva cantidad
+                updateLoadMoreButton(); // Actualiza la visibilidad del botón
             });
+
+            // --- INICIALIZACIÓN ---
+            renderProducts();
+            updateLoadMoreButton();
 
             // --- CART FUNCTIONALITY ---
             const cartButton = document.getElementById('cart-button');
@@ -257,18 +315,15 @@
                 }
             });
 
-            // Add to cart button click listener (event delegation)
             productListContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('add-to-cart-btn')) {
-                    const { sku, descripcion, precio } = e.target.dataset;
-                    // Get the quantity from the input next to the clicked button
+                    const { sku, descripcion, precio } = e.target.dataset; // Obtener precio del dataset
                     const quantityInput = e.target.closest('.flex').querySelector('.quantity-input-product');
                     const quantity = parseInt(quantityInput.value);
-                    addToCart(sku, descripcion, parseFloat(precio), quantity);
+                    addToCart(sku, descripcion, parseFloat(precio), quantity); // Pasar precio a addToCart
                 }
             });
             
-            // Quantity controls on product cards (for + and - buttons)
             productListContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('quantity-control')) {
                     const sku = e.target.dataset.sku;
@@ -285,27 +340,25 @@
                 }
             });
 
-            // Add change listener for manual input on product cards
             productListContainer.addEventListener('change', (e) => {
                 if (e.target.classList.contains('quantity-input-product')) {
                     let newQuantity = parseInt(e.target.value);
-                    // Ensure quantity is at least 1
                     if (isNaN(newQuantity) || newQuantity < 1) {
                         e.target.value = 1;
                     }
                 }
             });
 
-
+            // Re-añadido 'precio' a la firma de la función y al push del carrito
             const addToCart = (sku, descripcion, precio, quantity = 1) => {
                 const existingItem = cart.find(item => item.sku === sku);
                 if (existingItem) {
                     existingItem.quantity += quantity;
                 } else {
-                    cart.push({ sku, descripcion, precio, quantity });
+                    cart.push({ sku, descripcion, precio, quantity }); // Guardar precio en el carrito
                 }
                 updateCartCounter();
-                openCart(); // open cart modal automatically when adding
+                openCart();
             };
 
             const updateCartCounter = () => {
@@ -327,7 +380,7 @@
                             <div class="w-2/3">
                                 <p class="font-semibold">${item.descripcion}</p>
                                 <p class="text-sm text-gray-600">SKU: ${item.sku}</p>
-                                <p class="text-sm text-gray-600">₡${item.precio.toLocaleString('es-CR')}</p>
+                                <p class="text-sm text-gray-600">₡${item.precio ? item.precio.toLocaleString('es-CR') : 'N/A'}</p> <!-- Mostrar precio unitario -->
                             </div>
                             <div class="flex items-center space-x-2">
                                 <button class="quantity-change text-lg font-bold px-2 rounded-md bg-gray-200 hover:bg-gray-300" data-sku="${item.sku}" data-change="-1">−</button>
@@ -343,20 +396,20 @@
                         cartItemsContainer.appendChild(itemElement);
                     });
                 }
-                updateCartTotal();
-                addCartItemEventListeners(); // Re-add event listeners for new elements
+                updateCartTotal(); // Llamada para actualizar el total
+                addCartItemEventListeners();
             };
 
             const addCartItemEventListeners = () => {
                 document.querySelectorAll('.quantity-change').forEach(button => {
-                    button.onclick = (e) => { // Use onclick to easily reassign
+                    button.onclick = (e) => {
                         const { sku, change } = e.target.dataset;
                         changeQuantity(sku, parseInt(change));
                     };
                 });
 
                 document.querySelectorAll('.quantity-input').forEach(input => {
-                    input.onchange = (e) => { // Use onchange to easily reassign
+                    input.onchange = (e) => {
                         const sku = e.target.dataset.sku;
                         let newQuantity = parseInt(e.target.value);
                         if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
@@ -370,7 +423,7 @@
                 });
 
                 document.querySelectorAll('.remove-from-cart-btn').forEach(button => {
-                    button.onclick = (e) => { // Use onclick to easily reassign
+                    button.onclick = (e) => {
                         const skuToRemove = e.target.closest('button').dataset.sku;
                         removeFromCart(skuToRemove);
                     };
@@ -382,7 +435,7 @@
                 if (!item) return;
 
                 item.quantity += change;
-                if (item.quantity < 1) item.quantity = 1; // Prevent quantity from going below 1
+                if (item.quantity < 1) item.quantity = 1;
 
                 updateCartCounter();
                 renderCart();
@@ -394,12 +447,12 @@
                 renderCart();
             };
 
+            // Re-añadida la función updateCartTotal
             const updateCartTotal = () => {
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
                 document.getElementById('cart-total').textContent = `₡${total.toLocaleString('es-CR')}`;
             };
 
-            // --- SHARE BUTTONS ---
             const shareEmailBtn = document.getElementById('share-email');
             const shareWhatsappBtn = document.getElementById('share-whatsapp');
 
@@ -408,6 +461,7 @@
 
                 let text = "Lista de productos para Almacenes El Rey:\n\n";
                 cart.forEach(item => {
+                    // Incluir precio en el texto compartido
                     text += `- ${item.descripcion} (SKU: ${item.sku}) x${item.quantity} = ₡${(item.precio * item.quantity).toLocaleString('es-CR')}\n`;
                 });
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
@@ -426,11 +480,34 @@
                 window.open(`https://wa.me/?text=${text}`, '_blank');
             });
 
-            // Inicializa contador vacío
+            // --- LIGHTBOX FUNCTIONALITY ---
+            const lightboxContainer = document.getElementById('lightbox-modal-container');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const closeLightboxBtn = document.getElementById('close-lightbox-button');
+
+            window.openLightbox = (imageUrl) => {
+                lightboxImage.src = imageUrl;
+                lightboxContainer.classList.remove('pointer-events-none', 'opacity-0');
+                lightboxContainer.classList.add('pointer-events-auto', 'opacity-100');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeLightbox = () => {
+                lightboxContainer.classList.remove('pointer-events-auto', 'opacity-100');
+                lightboxContainer.classList.add('pointer-events-none', 'opacity-0');
+                lightboxImage.src = '';
+                document.body.style.overflow = '';
+            };
+
+            closeLightboxBtn.addEventListener('click', closeLightbox);
+            lightboxContainer.addEventListener('click', (e) => {
+                if (e.target === lightboxContainer || e.target === closeLightboxBtn) {
+                    closeLightbox();
+                }
+            });
+
             updateCartCounter();
         });
     </script>
 </body>
 </html>
-
-
