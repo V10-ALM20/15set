@@ -34,7 +34,8 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        #cart-modal-container, #lightbox-modal-container { /* Added lightbox-modal-container */
+        /* Added welcome-modal-container for transition */
+        #cart-modal-container, #lightbox-modal-container, #welcome-modal-container {
             transition: opacity 0.3s ease;
         }
         #cart-modal {
@@ -152,6 +153,17 @@
         </div>
     </div>
 
+    <!-- =========== Welcome Pop-up Modal (NEW) =========== -->
+    <div id="welcome-modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center opacity-0 pointer-events-none z-[70]">
+        <div class="relative p-4 max-w-[50vw] max-h-[50vh]"> <!-- Ajustado el tamaño máximo del contenedor -->
+            <img id="welcome-image" 
+                 src="https://github.com/V10-ALM20/15set/blob/main/images/8b1341e9-f7ba-4d1c-82ad-7137a34db189.png?raw=true" 
+                 alt="Pasos para usar la página" 
+                 class="max-w-full max-h-full rounded-lg shadow-xl cursor-pointer object-contain"
+                 onclick="closeWelcomeModal()">
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- PRODUCT DATA ---
@@ -165,8 +177,8 @@
                 { sku: "0216803", descripcion: "ABANICO PAPEL 20CM TRICOLOR", precio: 500 },
                 { sku: "0092791", descripcion: "ADORNO BOLA 15 SEPTIEMBRE 19CM", precio: 700 },
                 { sku: "0230288", descripcion: "ADORNO MES PATRIO CAMPESINOS 32X50CM SURTIDO", precio: 2350 },
-                { sku: "0216800", descripcion: "ADORNO PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216800/UD/150515056612750409.JPG", precio: 650 },
-                { sku: "0210799", descripcion: "ADORNO CARTON MES PATRIO LAPAS", url: "https://stscaiprod.blob.core.windows.net/0210799/UD/1505150566202182457.JPG", precio: 1750 },
+                { sku: "0216800", descripcion: "ADORNO PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216800/UD/150515056612750409.JPG", precio: 500 },
+                { sku: "0210799", descripcion: "ADORNO CARTON MES PATRIO LAPAS", url: "https://stscaiprod.blob.core.windows.net/0210799/UD/1505150566202182457.JPG", precio: 700 },
                 { sku: "0255089", descripcion: "BANDERA PAPEL COSTA RICA 16.5X28.5CM 10UND", precio: 850 },
                 { sku: "0083071", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 30X45CM", precio: 500 },
                 { sku: "0083072", descripcion: "BANDERA TELA ESTAMPADO COSTA RICA 60X90CM", precio: 975 },
@@ -177,17 +189,17 @@
                 { sku: "0216798", descripcion: "CAMPANA PAPEL 20CM TRICOLOR", url: "https://stscaiprod.blob.core.windows.net/0216798/UD/150515056610350435.JPG", precio: 650 },
                 { sku: "0255084", descripcion: "CANASTA BAMBU ENTRELAZADO MARRON", precio: 850 },
                 { sku: "0210797", descripcion: "CINTA DECORATIVA TELA BANDERA COSTA RICA 90X8CM", precio: 650 },
-                { sku: "0216792", descripcion: "CILINDRO PLEGABLE CORRUGADO", url: "https://stscaiprod.blob.core.windows.net/0216792/UD/150515056605950404.JPG", precio: 850 },
+                { sku: "0216792", descripcion: "CILINDRO PLEGABLE CORRUGADO", url: "https://stscaiprod.blob.core.windows.net/0216792/UD/150515056605950404.JPG", precio: 800 },
                 { sku: "0216782", descripcion: "DECORACION TIPICA C/RUEDA 3M SURTIDO", precio: 800 },
-                { sku: "0210801", descripcion: "ESCUDO COSTARRICENSE 25CM", url: "https://stscaiprod.blob.core.windows.net/0210801/UD/150515056622650360.JPG", precio: 850 },
-                { sku: "0210800", descripcion: "ESCUDO COSTARRICENSE 61CM", url: "https://stscaiprod.blob.core.windows.net/0210800/UD/150515056621950359.JPG", precio: 1750 },
+                { sku: "0210801", descripcion: "ESCUDO COSTARRICENSE 25CM", url: "https://stscaiprod.blob.core.windows.net/0210801/UD/150515056622650360.JPG", precio: 700 },
+                { sku: "0210800", descripcion: "ESCUDO COSTARRICENSE 61CM", url: "https://stscaiprod.blob.core.windows.net/0210800/UD/150515056621950359.JPG", precio: 1200 },
                 { sku: "0216797", descripcion: "ESFERA PAPEL 38CM TRICOLOR", precio: 1500 },
                 { sku: "0216796", descripcion: "ESFERA PAPEL 30CM TRICOLOR", precio: 850 },
                 { sku: "0216795", descripcion: "ESFERA PAPEL COLGANTE 20CM TRICOLOR", precio: 650 },
-                { sku: "0255094", descripcion: "FAROL FAUNA COSTA RICA", url: "https://stscaiprod.blob.core.windows.net/0255094/UD/1505150790126182540.JPG", precio: 1250 },
-                { sku: "0255092", descripcion: "FAROL FAUNA COSTA RICA LAPA", url: "https://stscaiprod.blob.core.windows.net/0255092/UD/1505150790102182539.JPG", precio: 1250 },
+                { sku: "0255094", descripcion: "FAROL FAUNA COSTA RICA", url: "https://stscaiprod.blob.core.windows.net/0255094/UD/1505150790126182540.JPG", precio: 1200 },
+                { sku: "0255092", descripcion: "FAROL FAUNA COSTA RICA LAPA", url: "https://stscaiprod.blob.core.windows.net/0255092/UD/1505150790102182539.JPG", precio: 1200 },
                 { sku: "0210802", descripcion: "FAROL CASA 32X50CM", url: "https://stscaiprod.blob.core.windows.net/0210802/UD/1505150566639182453.JPG", precio: 950 },
-                { sku: "0286501", descripcion: "GANCHO PLASTICO P/FAROL", url: "https://stscaiprod.blob.core.windows.net/0286501/UD/1505151016683255369.JPG", precio: 1250 },
+                { sku: "0286501", descripcion: "GANCHO PLASTICO P/FAROL", url: "https://stscaiprod.blob.core.windows.net/0286501/UD/1505151016683255369.JPG", precio: 300 },
                 { sku: "0216786", descripcion: "GUIRNALDA PAPEL TRICOLOR C/CAMPESINOS 3M", precio: 1250 },
                 { sku: "0216791", descripcion: "GLOBO CHINO PAPEL 12PULG TRICOLOR", precio: 1250 },
                 { sku: "0216784", descripcion: "GUIRNALDA PAPEL TRICOLOR C/GUARIA MORADA 3M", precio: 1250 },
@@ -195,10 +207,10 @@
                 { sku: "0230291", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO YUGO CARRETAS 3M", precio: 1500 },
                 { sku: "0230293", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M ROJA", precio: 1250 },
                 { sku: "0230292", descripcion: "GUIRNALDA MES PATRIO ESTAMPADO RUEDA CARRETA 3M AZUL", precio: 1250 },
-                { sku: "0216787", descripcion: "GUIRNALDA PAPEL CARRETA TIPICA", url: "https://stscaiprod.blob.core.windows.net/0216787/UD/150515056599150317.JPG", precio: 1500 },
-                { sku: "0216789", descripcion: "GUIRNALDA PAPEL TRICOLOR 2M", url: "https://stscaiprod.blob.core.windows.net/0216789/UD/150515056602850314.JPG", precio: 650 },
-                { sku: "0216802", descripcion: "GUIRNALDA TRICOLOR 10CM 8UND", url: "https://stscaiprod.blob.core.windows.net/0216802/UD/150515056606650309.JPG", precio: 1500 },
-                { sku: "0230290", descripcion: "GUIRNALDA MES PATRIO ANTORCHA", url: "https://stscaiprod.blob.core.windows.net/0230290/UD/150515066076450303.jpg", precio: 1500 },
+                { sku: "0216787", descripcion: "GUIRNALDA PAPEL CARRETA TIPICA", url: "https://stscaiprod.blob.core.windows.net/0216787/UD/150515056599150317.JPG", precio: 1250 },
+                { sku: "0216789", descripcion: "GUIRNALDA PAPEL TRICOLOR 2M", url: "https://stscaiprod.blob.core.windows.net/0216789/UD/150515056602850314.JPG", precio: 850 },
+                { sku: "0216802", descripcion: "GUIRNALDA TRICOLOR 10CM 8UND", url: "https://stscaiprod.blob.core.windows.net/0216802/UD/150515056606650309.JPG", precio: 650 },
+                { sku: "0230290", descripcion: "GUIRNALDA MES PATRIO ANTORCHA", url: "https://stscaiprod.blob.core.windows.net/0230290/UD/150515066076450303.jpg", precio: 1250 },
                 { sku: "0216790", descripcion: "GUIRNALDA PAPEL C/BANDERA 2M", url: "https://stscaiprod.blob.core.windows.net/0216790/UD/150515056603550300.JPG", precio: 850 },
                 { sku: "0216783", descripcion: "GUIRNALDA PAPEL C/ESCUDO 3M", url: "https://stscaiprod.blob.core.windows.net/0216783/UD/150515056595350294.JPG", precio: 1250 },
                 { sku: "0279757", descripcion: "PANUELO TIPICO ESTAMPADO BLANCO", precio: 550 },
@@ -349,7 +361,6 @@
                 }
             });
 
-            // Re-añadido 'precio' a la firma de la función y al push del carrito
             const addToCart = (sku, descripcion, precio, quantity = 1) => {
                 const existingItem = cart.find(item => item.sku === sku);
                 if (existingItem) {
@@ -447,7 +458,6 @@
                 renderCart();
             };
 
-            // Re-añadida la función updateCartTotal
             const updateCartTotal = () => {
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
                 document.getElementById('cart-total').textContent = `₡${total.toLocaleString('es-CR')}`;
@@ -461,7 +471,6 @@
 
                 let text = "Lista de productos para Almacenes El Rey:\n\n";
                 cart.forEach(item => {
-                    // Incluir precio en el texto compartido
                     text += `- ${item.descripcion} (SKU: ${item.sku}) x${item.quantity} = ₡${(item.precio * item.quantity).toLocaleString('es-CR')}\n`;
                 });
                 const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
@@ -506,6 +515,33 @@
                 }
             });
 
+            // --- WELCOME POP-UP FUNCTIONALITY (NEW) ---
+            const welcomeModalContainer = document.getElementById('welcome-modal-container');
+            const welcomeImage = document.getElementById('welcome-image');
+
+            const openWelcomeModal = () => {
+                welcomeModalContainer.classList.remove('opacity-0', 'pointer-events-none');
+                welcomeModalContainer.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling background
+            };
+
+            window.closeWelcomeModal = () => { // Make it global so it can be called from onclick in HTML
+                welcomeModalContainer.classList.remove('opacity-100', 'pointer-events-auto');
+                welcomeModalContainer.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = ''; // Restore scrolling
+            };
+
+            // Close welcome modal when clicking outside the image
+            welcomeModalContainer.addEventListener('click', (e) => {
+                if (e.target === welcomeModalContainer) { // Only close if click is on the background
+                    closeWelcomeModal();
+                }
+            });
+
+            // Show welcome modal automatically on page load
+            openWelcomeModal();
+
+            // Inicializa contador vacío del carrito
             updateCartCounter();
         });
     </script>
